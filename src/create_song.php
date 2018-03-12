@@ -5,9 +5,7 @@
 
 	$id = $database->lastInsertRowID();
 	$query = array( 'id' => $id, 
-					'action' => 'edit' );
+					'action' => 'create' );
 	$url = "view_song.php?" . http_build_query($query);
 	header('Location: ' . $url);
-
-
 ?>
