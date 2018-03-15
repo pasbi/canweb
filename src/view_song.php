@@ -5,8 +5,9 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=2">
 	<title>CAN!</title>
-	<script src="static/js/jquery-3.3.1.js"></script>
-	<script src="static/js/bootstrap.js"></script>
+	<script type="text/javascript" src="static/js/jquery-3.3.1.js"></script>
+	<script type="text/javascript" src="static/js/bootstrap.js"></script>
+	<script type="text/javascript" src="static/js/snackbar.js"></script>
 	<link rel="stylesheet" href="static/css/bootstrap.css">
 	<link rel="stylesheet" href="static/css/snackbar.css">
 	<link rel="stylesheet" href="static/css/contenteditable_placeholder.css">
@@ -17,7 +18,6 @@
 	$editurl = "view_song.php?" . http_build_query(array('id' => $songId, 'action' => 'edit'));
 	$viewurl = "view_song.php?" . http_build_query(array('id' => $songId, 'action' => 'view'));	
 	$removeurl = "update_song.php?" . http_build_query(array('id' => $songId, 'action' => 'remove'));
-	$importsongurl = "import_song.php?" . http_build_query(array('id' => $songId));
 
 	$database = new SQLite3('db/can.sqlite') or die('Unable to open database');
 	$stmt = $database->prepare("SELECT content, label from songs WHERE songId=:id");
@@ -64,10 +64,24 @@
 		function remove() {
 			$.post('update_song.php', {
 				"action": "remove",
-				"id": "<?php echo $songId;?>",
+				"id": "<?php=$songId;?>",
 			}, function(msg) {
 				window.location = 'index.php';
 			});
+		}
+
+		function importSong() {
+			var query = $("#songLabel").text();
+			query = "query=" + encodeURIComponent(query) 
+					+ "&action=search"
+					+ "&id=" + encodeURIComponent("<?=$songId?>");
+			// $.post("import_song.php", {
+			// 	"query": query,
+			// 	"action": 'search',
+			// 	"id": <?=$songId?>
+			// });
+			var importsongurl = "import_song.php?" + query
+			window.location = importsongurl;
 		}
 		window.onload = function () {
 			// no line break in song-label
@@ -89,7 +103,7 @@
 </head>
 <body>
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<a class="navbar-brand" href="index.php">
@@ -126,7 +140,7 @@
 							<a class="nav-link" href="#" onclick="remove();">Remove</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{$importsongurl}">Import</a>
+							<a class="nav-link" href="#" onclick="importSong(); return false">Import</a>
 						</li>
 EOD;
 						break;
@@ -139,7 +153,7 @@ EOD;
 							<a class="nav-link" href="#" onclick="remove(); return false;">Cancel</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link" href="{$importsongurl}";">Import</a>
+							<a class="nav-link" href="#" onclick="importSong(); return false";">Import</a>
 						</li>
 EOD;
 						break;

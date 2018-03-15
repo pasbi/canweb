@@ -7,9 +7,9 @@
 	<title>CAN!</title>
 	<link rel="stylesheet" type="text/css" href="static/css/bootstrap.css">
 	<link rel="stylesheet" type="text/css" href="static/css/snackbar.css">
-	<script src="static/js/jquery-3.3.1.js"></script>
-	<script src="static/js/bootstrap.js"></script>
-	<script src="static/js/snackbar.js"></script>
+	<script type="text/javascript" src="static/js/jquery-3.3.1.js"></script>
+	<script type="text/javascript" src="static/js/bootstrap.js"></script>
+	<script type="text/javascript" src="static/js/snackbar.js"></script>
 
 	<script> 
 		function viewSong(songId) {
@@ -20,7 +20,7 @@
 <body>
 
 	<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+		<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
 			<span class="navbar-toggler-icon"></span>
 		</button>
 		<a class="navbar-brand" href="index.php">CAN</a>
@@ -28,9 +28,6 @@
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item">
 					<a class="nav-link" href="create_song.php">New Song</a>
-				</li>
-				<li class="nav-item">
-					<a class="nav-link" href="#" onclick="showSnackbar('snackbar');">TEST</a>
 				</li>
 			</ul>
 		</div>

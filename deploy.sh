@@ -5,6 +5,7 @@ deploydir="/var/www/html/can"
 url="localhost/can"
 src="src"
 browser="chromium-browser"
+# browser=firefox
 databaseDir="db"
 databaseName="can.sqlite"
 initsql="initdb.sql"
