@@ -31,12 +31,15 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			$("#search-chords-button").click(function () {
-					var query = $("#search-chord-input").val();
-					query = "query=" + encodeURIComponent(query) + "&action=search&id=" + encodeURIComponent("" + <?=$songId?>)
-					url = "http://localhost/can/import_song.php?" + query;
-					$("#results-pane").html("<div class='loader'></div>")
-					window.location.assign(url)
-				});
+				var query = $("#search-chord-input").val();
+				query = "query=" + encodeURIComponent(query) + "&action=search&id=" + encodeURIComponent("" + <?=$songId?>)
+				url = "http://localhost/can/import_song.php?" + query;
+				$("#results-pane").html("<div class='loader'></div>")
+				window.location.assign(url)
+			});
+			$(".song-row").click(function() {
+				window.location = $(this).data("href");
+			});
 		});
 	</script>
 </head>
@@ -70,7 +73,7 @@
 		if ($result_items['status'] != 'success') {
 			echo "<div> Request Failed! Status: " . $result_items['status'] . "</div>";
 		} else {
-			$result_items = $result_items['results'];
+			$result_items = $result_items['data'];
 			echo "<table class='table table-dark'>";
 			echo "<thead style='display:none'>";
 			echo "<th scope='col'>Song</th>";
@@ -79,7 +82,12 @@
 			echo "</thead>";
 			echo "<tbody>";
 			foreach ($result_items as $item) {
-				echo "<tr>";
+				$url = "import_song_preview.php?" 
+					. http_build_query(array(
+						"source-url" => $item['url'],
+						"id" => $songId
+					));
+				echo "<tr class='song-row' data-href='" . $url . "'>";
 				echo "<td>" . $item['song_name'] . "</td>";
 				echo "<td>" . $item['artist_name'] . "</td>";
 				echo "<td>" . $item['rating'] . "</td>";
