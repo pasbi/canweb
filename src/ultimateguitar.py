@@ -31,7 +31,22 @@ def search_page_n(query, page):
 	# After `max_repetitions` 503-errors, give up.
 	return []
 
+def getContent(page):
+	soup = BeautifulSoup(page, 'lxml')
+	scripts = soup.findAll('script');
+	prefix = "window.UGAPP.store.page"
+
+	scripts = list(map(lambda tag: tag.text.strip(), scripts))
+	scripts = list(filter(lambda script: script.startswith(prefix), scripts))
+	if len(scripts) != 1:
+		return None
+	else:
+		jsonData = scripts[0][len(prefix):].strip()[1:].strip()[:-1]
+		data = json.loads(jsonData)
+		return data['data']
+
 def search_page(query, page):
+	# print("search")
 	common.debug("search_page", query, page)
 	url = "https://www.ultimate-guitar.com/search.php?search_type=title&value={:s}&page={:d}"
 	url = url.format(urllib.parse.quote_plus(query), page)
@@ -40,19 +55,13 @@ def search_page(query, page):
 	except urllib.error.HTTPError as e:
 		return (str(e), None)
 
-	soup = BeautifulSoup(page, 'lxml')
-	scripts = soup.findAll('script');
-
-	prefix = "window.UGAPP.store.page"
-	scripts = map(lambda tag: tag.text.strip(), scripts)
-	scripts = list(filter(lambda script: script.startswith(prefix), scripts))
-	if len(scripts) != 1:
+	content = getContent(page)
+	if content == None:
 		return (common.STATUS_REQUEST_PARSE_ERROR, None)
-	json_data = scripts[0][len(prefix):].strip()[1:].strip()[:-1]
-	data = json.loads(json_data)
-	data = data['data']['results']
+	else:
+		content = content['results']
 	items = []
-	for datum in data:
+	for datum in content:
 		try:
 			if datum['type'] == 'Chords':
 				items.append({
@@ -62,7 +71,8 @@ def search_page(query, page):
 					"url": datum['tab_url'],
 				})
 		except KeyError:
-			pass	# we are not interested in special items that dont't contain the keys above.
+			# we are not interested in special items that dont't contain the keys above.
+			pass
 	return (common.STATUS_REQUEST_SUCCESS, items)
 
 def search(query):
@@ -73,3 +83,15 @@ def search(query):
 		items = pool.starmap(search_page_n, args)
 	items = list(itertools.chain(*items))
 	return (common.STATUS_REQUEST_SUCCESS, items)
+
+
+def getPattern(query):
+	page = common.loadPage(query)
+	try:
+		content = getContent(page)['tab_view']['wiki_tab']['content']
+	except KeyError:
+		return (common.STATUS_REQUEST_PARSE_ERROR, None)
+
+	content = content.replace('[ch]', '').replace('[/ch]', '')
+	return (common.STATUS_REQUEST_SUCCESS, content)
+

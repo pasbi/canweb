@@ -19,7 +19,7 @@ def loadPage(url):
 	}
 	r = urllib.request.Request(url, headers=headers)
 	page = urllib.request.urlopen(r).read()
-	return page
+	return page.decode('utf-8')
 
 STATUS_REQUEST_SUCCESS = 'success'
 STATUS_REQUEST_PARSE_ERROR = 'parse error'

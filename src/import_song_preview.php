@@ -16,11 +16,25 @@
 	$sourceUrl = $_GET['source-url'];
 	$editurl = "view_song.php?" . http_build_query(array('id' => $songId, 'action' => 'edit'));
 	$viewurl = "view_song.php?" . http_build_query(array('id' => $songId, 'action' => 'view'));
-	$pattern = escapeshellcmd('./get_pattern.py')
-	 			. " " . escapeshellarg('ultimateguitar')
-	 			. " " . escapeshellarg($sourceUrl);
+	$command = escapeshellcmd('./get_pattern.py')
+				. " " . escapeshellarg('ultimateguitar')
+				. " " . escapeshellarg('get')
+				. " " . escapeshellarg($sourceUrl);
+	$output = shell_exec($command);
+	$data = json_decode($output, true);
+	$success = $data['status'] === 'success';
+	$pattern = $data['data'];
 	?>
 	<script type="text/javascript">
+		accept = function() {
+			$.post('update_song.php', {
+				"action": "edit",
+				"id": "<?php echo $songId;?>",
+				"content": <?php echo json_encode($pattern); ?>
+			}, function() {
+				window.location = '<?=$viewurl;?>';
+			});
+		};
 	</script>
 </head>
 <body>
@@ -32,17 +46,22 @@
 		<div class="collapse navbar-collapse" id="mainMenu">
 			<ul class="navbar-nav mr-auto">
 				<li class="nav-item">
-					<a class="nav-link">Accept</a>
+					<a class="nav-link" href="#" onclick="accept(); return false;">Accept</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link">Cancel</a>
+					<a class="nav-link" href="#" onclick="history.back();">Cancel</a>
 				</li>
 			</ul>
 		</div>
 	</nav>
 
 	<div>
-		<?=$pattern?>
+		<?php
+		$command = escapeshellcmd('./format_pattern.py')
+			. " " . escapeshellarg($pattern);
+		$output = shell_exec($command);
+		echo $output;
+		?>
 	</div>
 </body>
 </html>

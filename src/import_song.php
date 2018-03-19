@@ -22,8 +22,9 @@
 	$song = $stmt->execute()->fetchArray();
 	$songLabel = $song['label'];
 	$query = $_GET['query'];
-	$command = escapeshellcmd('./search.py')
+	$command = escapeshellcmd('./get_pattern.py')
 	 			. " " . escapeshellarg('ultimateguitar')
+	 			. " " . escapeshellarg('search')
 	 			. " " . escapeshellarg($query);
 	$output = shell_exec($command);
 	$result_items = json_decode($output, true);

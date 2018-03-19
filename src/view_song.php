@@ -5,19 +5,19 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=2">
 	<title>CAN!</title>
-	<script type="text/javascript" src="static/js/jquery-3.3.1.js"></script>
-	<script type="text/javascript" src="static/js/bootstrap.js"></script>
-	<script type="text/javascript" src="static/js/snackbar.js"></script>
-	<link rel="stylesheet" href="static/css/bootstrap.css">
-	<link rel="stylesheet" href="static/css/snackbar.css">
-	<link rel="stylesheet" href="static/css/contenteditable_placeholder.css">
+	<script type="text/javascript" src="./static/js/jquery-3.3.1.js"></script>
+	<script type="text/javascript" src="./static/js/bootstrap.js"></script>
+	<script type="text/javascript" src="./static/js/snackbar.js"></script>
+	<link rel="stylesheet" href="./static/css/bootstrap.css">
+	<link rel="stylesheet" href="./static/css/snackbar.css">
+	<link rel="stylesheet" href="./static/css/contenteditable_placeholder.css">
+	<link rel="stylesheet" href="./static/css/chordeditarea.css">
 
 	<?php
 	$action = $_GET['action'];
 	$songId = $_GET['id'];
 	$editurl = "view_song.php?" . http_build_query(array('id' => $songId, 'action' => 'edit'));
 	$viewurl = "view_song.php?" . http_build_query(array('id' => $songId, 'action' => 'view'));	
-	$removeurl = "update_song.php?" . http_build_query(array('id' => $songId, 'action' => 'remove'));
 
 	$database = new SQLite3('db/can.sqlite') or die('Unable to open database');
 	$stmt = $database->prepare("SELECT content, label from songs WHERE songId=:id");
@@ -36,7 +36,7 @@
 		case "view":
 			$labelPlaceholder = "";
 			$contentPlaceholder = "";
-			$contenteditable = "contenteditable='false'";
+			$contenteditable = "";
 			if ($songContent == "") {
 				$songContent = "empty";
 			}
@@ -56,30 +56,25 @@
 				"action": "edit",
 				"label": $("#songLabel").text(),
 				"id": "<?php echo $songId;?>",
-				"content": $("#contentArea").html()
-			}, function(msg) {
+				"content": $("#contentArea").val()
+			}, function() {
 				window.location = '<?=$viewurl;?>';
+			}).fail(function() {
 			});
 		}
 		function remove() {
 			$.post('update_song.php', {
 				"action": "remove",
-				"id": "<?php=$songId;?>",
+				"id": "<?=$songId;?>",
 			}, function(msg) {
 				window.location = 'index.php';
 			});
 		}
-
 		function importSong() {
 			var query = $("#songLabel").text();
 			query = "query=" + encodeURIComponent(query) 
 					+ "&action=search"
 					+ "&id=" + encodeURIComponent("<?=$songId?>");
-			// $.post("import_song.php", {
-			// 	"query": query,
-			// 	"action": 'search',
-			// 	"id": <?=$songId?>
-			// });
 			var importsongurl = "import_song.php?" + query
 			window.location = importsongurl;
 		}
@@ -98,6 +93,14 @@
 		        }
 		    });
 		});
+		function auto_grow(element) {
+			element.style.height = "5px";
+			element.style.height = (element.scrollHeight + 10)+"px";
+		}
+		$("document").ready(function() {
+			auto_grow($('#contentArea')[0])
+		});
+
 
 	</script> 
 </head>
@@ -173,18 +176,21 @@ EOD;
 	</nav>
 
 	<div class='panel panel-default'>
+		<!-- do not introduce whitespace or newline -->
 		<h1 id='songLabel' <?=$contenteditable?> <?=$labelPlaceholder?>><?=$songLabel?></h1>
 	</div>
 	<hr>
-	<div class='panel panel-default'>
-		<div id='contentArea' <?=$contenteditable?> <?=$contentPlaceholder?>><?=$songContent?></div>
-	</div>
-
-	<div class="alert alert-error collapse" role="alert" id="passwordsNoMatchRegister">
-	  <span>
-	  <p>Looks like the passwords you entered don't match!</p>
-	  </span>
-	</div>
+	<div class='panel panel-default'><?php
+			if ($action === 'view') {
+				$command = escapeshellcmd('./format_pattern.py')
+					. " " . escapeshellarg($songContent);
+				$output = shell_exec($command);
+				echo $output;
+			} else {
+			    // do not introduce whitespace or newline
+				echo "<textarea type='text' class='chordeditarea' id='contentArea' onkeyup='auto_grow(this)'>" . $songContent . "</textarea>";
+			}
+			?></div>
 
 </body>
 </html>
