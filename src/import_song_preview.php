@@ -58,7 +58,8 @@
 	<div>
 		<?php
 		$command = escapeshellcmd('./format_pattern.py')
-			. " " . escapeshellarg($pattern);
+			. " " . escapeshellarg($pattern)
+			. " " . escapeshellarg(0);
 		$output = shell_exec($command);
 		echo $output;
 		?>
