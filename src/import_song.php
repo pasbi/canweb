@@ -10,12 +10,9 @@
 	<script type="text/javascript" src="static/js/jquery-3.3.1.js"></script>
 	<script type="text/javascript" src="static/js/bootstrap.js"></script>
 	<script type="text/javascript" src="static/js/snackbar.js"></script>
-	<script type="text/javascript" src="static/js/import_song.js"></script>
 	<?php
 	$songId = $_GET['id'];
-	$editurl = "view_song.php?" . http_build_query(array('id' => $songId, 'action' => 'edit'));
-	$viewurl = "view_song.php?" . http_build_query(array('id' => $songId, 'action' => 'view'));
-
+	$createurl = "view_song.php?" . http_build_query(array('id' => $songId, 'action' => 'create'));
 	$database = new SQLite3('db/can.sqlite') or die('Unable to open database');
 	$stmt = $database->prepare("SELECT content, label from songs WHERE songId=:id");
 	$stmt->bindValue(':id', $songId, SQLITE3_INTEGER);
@@ -56,7 +53,7 @@
 					<a class="nav-link" href="#" onclick="import(); return false;">Import</a>
 				</li>
 				<li class="nav-item">
-					<a class="nav-link" href="<?=$viewurl?>">Cancel</a>
+					<a class="nav-link" href="<?=$createurl?>">Cancel</a>
 				</li>
 			</ul>
 		</div>
@@ -71,31 +68,37 @@
 
 	<div id='results-pane'>
 		<?php
-		if ($result_items['status'] != 'success') {
-			echo "<div> Request Failed! Status: " . $result_items['status'] . "</div>";
+		if ($result_items['status'] == 'empty') {
+			echo "<div>Please enter a query</div>";
+		} elseif ($result_items['status'] != 'success') {
+			echo "<div>Unexpected Error: " . $result_items['status'] . "</div>";
 		} else {
 			$result_items = $result_items['data'];
-			echo "<table class='table table-dark'>";
-			echo "<thead style='display:none'>";
-			echo "<th scope='col'>Song</th>";
-			echo "<th scope='col'>Artist</th>";
-			echo "<th scope='col'>rating</th>";
-			echo "</thead>";
-			echo "<tbody>";
-			foreach ($result_items as $item) {
-				$url = "import_song_preview.php?" 
-					. http_build_query(array(
-						"source-url" => $item['url'],
-						"id" => $songId
-					));
-				echo "<tr class='song-row' data-href='" . $url . "'>";
-				echo "<td>" . $item['song_name'] . "</td>";
-				echo "<td>" . $item['artist_name'] . "</td>";
-				echo "<td>" . $item['rating'] . "</td>";
-				echo "</tr>";
+			if (count($result_items) > 1) {
+				echo "<table class='table table-dark'>";
+				echo "<thead style='display:none'>";
+				echo "<th scope='col'>Song</th>";
+				echo "<th scope='col'>Artist</th>";
+				echo "<th scope='col'>rating</th>";
+				echo "</thead>";
+				echo "<tbody>";
+				foreach ($result_items as $item) {
+					$url = "import_song_preview.php?" 
+						. http_build_query(array(
+							"source-url" => $item['url'],
+							"id" => $songId
+						));
+					echo "<tr class='song-row' data-href='" . $url . "'>";
+					echo "<td>" . $item['song_name'] . "</td>";
+					echo "<td>" . $item['artist_name'] . "</td>";
+					echo "<td>" . $item['rating'] . "</td>";
+					echo "</tr>";
+				}
+				echo "</tbody>";
+				echo "</table>";
+			} else {
+				echo "<div>No results :(</div>";
 			}
-			echo "</tbody>";
-			echo "</table>";
 		}
 		?>
 	</div>

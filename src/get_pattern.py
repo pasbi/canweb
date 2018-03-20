@@ -10,11 +10,11 @@ def fail(data):
 		'status': 'fail',
 		'data': data
 	}))
-	sys.exit(1)
+	sys.exit(0)
 
-def success(data, status = 'success'):		
+def success(data):		
 	print(json.dumps({
-		'status': status,
+		'status': "success",
 		'data': data
 	}))
 	sys.exit(0)
@@ -37,7 +37,10 @@ if __name__ == "__main__":
 		fail("unexpected service: " + service)
 
 	if command == "search":
-		status, data = service.search(query)
+		if len(query) == 0:
+			status = "empty"
+		else:
+			status, data = service.search(query)
 	elif command == "get":
 		status, data = service.getPattern(query)
 	else:

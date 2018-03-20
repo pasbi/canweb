@@ -25,49 +25,36 @@
     $song = $stmt->execute()->fetchArray();
     $songLabel = $song['label'];
     $songContent = $song['content'];
-
-    switch ($action) {
-        case "edit":
-        case "create":
-            $contentPlaceholder = "placeholder='Enter Chords'";
-            $labelPlaceholder = "placeholder='Enter Song Label'";
-            $contenteditable = "contenteditable='true'";
-            break;
-        case "view":
-            $labelPlaceholder = "";
-            $contentPlaceholder = "";
-            $contenteditable = "";
-            if ($songContent == "") {
-                $songContent = "empty";
-            }
-            if ($songLabel == "") {
-                $songLabel = "Unnamed Song";
-            }
-            break;
-    }
     ?>
 
     <script> 
+        function execOrGoto(urlOrFun) {
+            if (typeof urlOrFun == 'string') { 
+                window.location = urlOrFun;
+            } else if (typeof urlOrFun == 'function') {
+                urlOrFun();
+            }
+        }
         $(function(){
             $("#myNavbar").load("navbar_edit_song.html"); 
         });
-        function submit() {
+        function submit(urlOrFun) {
+
             $.post('update_song.php', {
                 "action": "edit",
                 "label": $("#songLabel").text(),
                 "id": "<?php echo $songId;?>",
                 "content": $("#contentArea").val()
             }, function() {
-                window.location = '<?=$viewurl;?>';
-            }).fail(function() {
+                execOrGoto(urlOrFun);
             });
         }
-        function remove() {
+        function remove(urlOrFun) {
             $.post('update_song.php', {
                 "action": "remove",
                 "id": "<?=$songId;?>",
-            }, function(msg) {
-                window.location = 'index.php';
+            }, function() {
+                execOrGoto(urlOrFun);
             });
         }
         function importSong() {
@@ -98,10 +85,34 @@
             element.style.height = (element.scrollHeight + 10)+"px";
         }
         $("document").ready(function() {
-            auto_grow($('#contentArea')[0])
+            var contentArea = $('#contentArea')[0];
+            if (typeof contentArea != "undefined") {
+                auto_grow(contentArea);
+            }
+
+            updateImportButton = function() {
+                var query = $("#songLabel").text();
+                var importButton = document.getElementById("importButton");
+                if (importButton != null) {
+                    if (query == "") {
+                        importButton.disabled = true;
+                    } else {
+                        importButton.disabled = false;
+                    }
+                }
+            }
+            document.getElementById('songLabel').addEventListener('input', function(e) {
+                updateImportButton();
+            });
+            updateImportButton();
+
+            $("#importButton").click(function() {
+                submit(importSong);
+            });
+            $("#editButton").click(function() {
+                submit('<?=$editurl?>');
+            })
         });
-
-
     </script> 
 </head>
 <body>
@@ -109,23 +120,7 @@
         <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-        <a class="navbar-brand" href="index.php">
-            <?php
-                switch ($action) {
-                    case 'edit':
-                        echo "Edit";
-                        break;
-                    case 'create':
-                        echo "Create";
-                        break;
-                    case 'view':
-                        echo "View";
-                        break;
-                    default:
-                        alert("error");
-                }
-            ?>
-        </a>
+        <a class="navbar-brand" href="index.php">CAN</a>
 
         <div class="collapse navbar-collapse" id="mainMenu">
             <ul class="navbar-nav mr-auto mt-2 mt-md-0">
@@ -134,20 +129,23 @@
                     case 'edit':
                         echo <<< EOD
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="submit(); return false;">Submit</a>
+                            <a class="nav-link" href="#" onclick="submit('{$viewurl}'); return false;">Submit</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{$viewurl}">Cancel</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" onclick="remove('index.php'); return false;">Remove</a>
                         </li>
 EOD;
                         break;
                     case 'create':
                         echo <<< EOD
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="submit(); return false;">Submit</a>
+                            <a class="nav-link" href="#" onclick="submit({$viewurl}; return false;">Submit</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#" onclick="remove(); return false;">Cancel</a>
+                            <a class="nav-link" href="#" onclick="remove('index.php'); return false;">Cancel</a>
                         </li>
 EOD;
                         break;
@@ -171,22 +169,36 @@ EOD;
 
     <div class='panel panel-default'>
         <!-- do not introduce whitespace or newline -->
-        <h1 id='songLabel' <?=$contenteditable?> <?=$labelPlaceholder?>><?=$songLabel?></h1>
+        <?php
+        if ($action == 'view') {
+            echo "<h1 id='songLabel' placeholder='Unnamed Song'>" . $songLabel . "</h1>";
+        } else {
+            echo "<h1 id='songLabel' contenteditable='true' placeholder='Enter Song Label'>" . $songLabel . "</h1>";
+        }
+        ?>
     </div>
     <hr>
+
     <div class='panel panel-default'><?php
-            if ($action === 'view') {
+        if ($action === 'view') {
+            if ($songContent == "") {
+                $output = "";
+            } else {
                 $command = escapeshellcmd('./format_pattern.py')
                     . " " . escapeshellarg($songContent)
                     . " " . escapeshellarg(0);
                 $output = shell_exec($command);
-                echo $output;
-            } else {
-                // do not introduce whitespace or newline
-                echo "<textarea type='text' class='chordeditarea' id='contentArea' onkeyup='auto_grow(this)'>" . $songContent . "</textarea>";
             }
-            ?></div>
-
+            echo "<div placeholder='Empty'>" . $output . "</div>";
+        } elseif ($action === 'edit') {
+            // do not introduce whitespace or newline
+            echo "<textarea type='text' class='chordeditarea' id='contentArea' onkeyup='auto_grow(this)' placeholder='Enter Chords'>"
+                . $songContent . "</textarea>";
+        } elseif ($action === 'create') {
+            echo "<button id='importButton' class='btn btn-lg btn-primary btn-block'>Import</button>";
+            echo "<button id='editButton' class='btn btn-lg btn-primary btn-block'>Edit</button>";
+        }
+        ?></div>
 </body>
 </html>
 

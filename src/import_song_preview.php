@@ -26,11 +26,12 @@
 	$pattern = $data['data'];
 	?>
 	<script type="text/javascript">
+		content = <?php echo json_encode($pattern); ?>;
 		accept = function() {
 			$.post('update_song.php', {
 				"action": "edit",
 				"id": "<?php echo $songId;?>",
-				"content": <?php echo json_encode($pattern); ?>
+				"content": content
 			}, function() {
 				window.location = '<?=$viewurl;?>';
 			});
