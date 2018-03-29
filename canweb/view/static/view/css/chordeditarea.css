@@ -1,0 +1,14 @@
+.chordeditarea {
+	background: transparent;
+	color: white;
+	font-family: Courier;
+	font-size: 12pt;
+	width: 100%;
+	overflow-y: hidden;
+	overflow-x: hidden;
+	margin: 0px;
+	-webkit-box-shadow: none; 
+	box-shadow: none; 
+	border-color: transparent;
+	resize: none;
+}

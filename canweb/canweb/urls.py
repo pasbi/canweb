@@ -18,7 +18,8 @@ from django.urls import path
 from django.conf.urls import url, include
 
 urlpatterns = [
+# TODO: crayz urls like xapix/ssongg/1.json work, too.
     path('admin/', admin.site.urls),
     url('api/', include("api.urls")),
-    # url('view/', include("view.urls")),
+    url('view/', include("view.urls")),
 ]

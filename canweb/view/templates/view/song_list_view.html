@@ -1,0 +1,23 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=2">
+    <title>CAN!</title>
+
+    {% load static %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}">
+    <script type="text/javascript" src="{% static "js/jquery-3.3.1.js" %}"></script>
+    <script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
+    <script type="text/javascript" src="{% static "view/js/song_list_view.js" %}"></script>
+
+</head>
+<body>
+    {% include "view/navbar.html" %}
+<div class="container">
+    <h1>Song Database:</h1>
+    <ul class="list-group" id="song-list" hidden>
+    </ul>
+    <div id="no-songs-placeholder" hidden> No songs available </div>
+</div>
+</body>

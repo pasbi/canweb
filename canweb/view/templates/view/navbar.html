@@ -1,0 +1,15 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#mainMenu" aria-controls="mainMenu" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand" href="index.php">CAN</a>
+    <div class="collapse navbar-collapse" id="mainMenu">
+        <ul class="navbar-nav mr-auto">
+            {% for menuitem in menuitems %}
+                <li class="nav-item">
+                    <a class="nav-link" id="{{ menuitem.id }}">{{ menuitem.label }}</a>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</nav>
