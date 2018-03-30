@@ -1,9 +1,12 @@
+beautifulsoup4==4.6.0
+bs4==0.0.1
 certifi==2018.1.18
 chardet==3.0.4
 Django==2.0.3
 djangorestframework==3.7.7
 httpie==0.9.9
 idna==2.6
+lxml==4.2.1
 Pygments==2.2.0
 pytz==2018.3
 requests==2.18.4
