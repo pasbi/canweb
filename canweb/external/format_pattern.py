@@ -209,18 +209,3 @@ class Pattern:
     def toString(self):
         f = lambda l: l.toString(self.start_tag, self.end_tag, self.transpose)
         return self.linebreak.join(map(f, self.lines))
-
-if __name__ == "__main__":
-    import sys
-    pattern = sys.argv[1]
-    transpose = int(sys.argv[2])
-    pattern = Pattern(pattern)
-    pattern.linebreak = "<br>"
-    pattern.start_tag = "<b>"
-    pattern.end_tag = "</b>"
-    pattern = pattern.toString()
-    print("<pre>" + pattern + "</pre>")
-
-
-
-

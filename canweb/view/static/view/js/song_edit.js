@@ -11,7 +11,7 @@ $('document').ready(function() {
     return $('#song-label').text()
   }
 
-  $('#mi-submit').click(function() {
+  function submitFromEdit() {
     $.ajax({
       method: 'PUT',
       url: '/api/song/' + songId + '.json',
@@ -31,9 +31,15 @@ $('document').ready(function() {
         // alert(JSON.stringify(errorThrown)); 
       },
     });
-  });
+  }
+
+  function submitFromPreview() {
+    $('#contentArea').val($('#preview-pattern-content').text())
+  }
+
   $('#mi-searchpattern').click(function() {
     enableSearchMode();
+    loadSearchResults(songLabel());
   })
 
   function autogrow(element) {
@@ -50,7 +56,7 @@ $('document').ready(function() {
     $('#search-results').attr('hidden', true);
     $('#no-search-results').attr('hidden', true);
     function searchResultItem(val) {
-      item = "<tr class='song-row' data-href='" + val['url'] + "'> \
+      item = "<tr class='song-row' data-url='" + val['url'] + "'> \
                 <td>" + val['song_name'] + "</td> \
                 <td>" + val['artist_name'] + "</td> \
                 <td>" + val['rating'] + "</td> \
@@ -73,6 +79,9 @@ $('document').ready(function() {
         if (items.length > 0) {
           $('#search-results-body').html(items.join(''));
           $('#search-results').attr('hidden', false);
+          $('.song-row').click(function() {
+            getPattern($(this).data('url'));
+          });
         } else {
           $('#no-search-results').text('No results.');
           $('#no-search-results').attr('hidden', false);
@@ -81,7 +90,28 @@ $('document').ready(function() {
       error: function() {
         $("#spinner-search-results").attr('hidden', true)
         $('#no-search-results').text('Something went wrong.');
-        $('#no-search-results').attr('hidden', false);y
+        $('#no-search-results').attr('hidden', false);
+      }
+    });
+  }
+
+  function getPattern(patternurl) {
+    $('#spinner-search-results').attr('hidden', false);
+    $("#search-pattern-mode").attr('hidden', true)
+    var url = "/api/pattern/ultimateguitar/" + btoa(patternurl) + "/";
+    $.ajax({
+      "method": "GET",
+      "url": url,
+      success: function(ajaxResult) {
+        $('#spinner-search-results').attr('hidden', true);
+        ajaxResult = JSON.parse(ajaxResult);
+        var pattern = ajaxResult['pattern'];
+        enablePreviewMode(pattern);
+      },
+      error: function() {
+        $('#spinner-search-results').attr('hidden', true);
+        alert("fail");
+        enableSearchMode();
       }
     });
   }
@@ -91,10 +121,18 @@ $('document').ready(function() {
     $('#search-pattern-mode').attr('hidden', true);
     $('#preview-pattern-mode').attr('hidden', true);
     $('#mi-searchpattern').attr('hidden', false);
+    $('#mi-submit').attr('hidden', false);
     miCancel = $('#mi-cancel');
     miCancel.unbind('click');
     autogrow($('#contentArea')[0]);
     miCancel.click(function() {
+      gotoView();
+    });
+
+    miSubmit = $('#mi-submit');
+    miSubmit.unbind('click');
+    miSubmit.click(function() {
+      submitFromEdit();
       gotoView();
     });
   }
@@ -104,12 +142,34 @@ $('document').ready(function() {
     $('#search-pattern-mode').attr('hidden', false);
     $('#preview-pattern-mode').attr('hidden', true);
     $('#mi-searchpattern').attr('hidden', true);
+    $('#mi-submit').attr('hidden', true);
     miCancel = $('#mi-cancel');
     miCancel.unbind('click');
     miCancel.click(function() {
       enableEditMode();
     });
-    loadSearchResults(songLabel());
+  }
+
+  function enablePreviewMode(previewPattern) {
+    $('#edit-mode').attr('hidden', true);
+    $('#search-pattern-mode').attr('hidden', true);
+    $('#preview-pattern-mode').attr('hidden', false);
+    $('#mi-searchpattern').attr('hidden', true);
+    $('#mi-submit').attr('hidden', false);
+    
+    miCancel = $('#mi-cancel');
+    miCancel.unbind('click');
+    miCancel.click(function() {
+      enableSearchMode();
+    });
+    $('#preview-pattern-content').text(previewPattern);
+    
+    miSubmit = $('#mi-submit');
+    miSubmit.unbind('click');
+    miSubmit.click(function() {
+      submitFromPreview();
+      enableEditMode();
+    });
   }
   
   enableEditMode();

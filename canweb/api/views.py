@@ -8,8 +8,9 @@ from rest_framework.reverse import reverse
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse
-from external.get_pattern import search
+import external.get_pattern
 import json
+import base64
 
 class SongList(generics.ListCreateAPIView):
     queryset = Song.objects.all()
@@ -21,6 +22,12 @@ class SongDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SongDetailSerializer
 
 def searchPattern(request, service, query):
-  search_results = search(service, query)
+  search_results = external.get_pattern.search(service, query)
   search_results = json.dumps(search_results)
   return HttpResponse(search_results)
+
+def getPattern(request, service, query):
+  url = base64.b64decode(query.encode('utf-8')).decode('utf-8')
+  pattern = external.get_pattern.getPattern(service, url)
+  result = json.dumps({"pattern": pattern})
+  return HttpResponse(result)
