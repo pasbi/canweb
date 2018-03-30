@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 import json
 import multiprocessing
 import itertools
-import common
+from external import common
 import urllib.error
 
 def search_page_n(query, page):
@@ -82,7 +82,7 @@ def search(query):
 	with multiprocessing.Pool(n) as pool:
 		items = pool.starmap(search_page_n, args)
 	items = list(itertools.chain(*items))
-	return (common.STATUS_REQUEST_SUCCESS, items)
+	return items
 
 
 def getPattern(query):
@@ -93,5 +93,5 @@ def getPattern(query):
 		return (common.STATUS_REQUEST_PARSE_ERROR, None)
 
 	content = content.replace('[ch]', '').replace('[/ch]', '')
-	return (common.STATUS_REQUEST_SUCCESS, content)
+	return content
 

@@ -7,7 +7,9 @@
 
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "view/css/chordeditarea.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "view/css/contenteditable_placeholder.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "view/css/spinner.css" %}">
     <script>
         songId = {{ pk }};
     </script>
@@ -18,8 +20,26 @@
 </head>
 <body>
     {% include "view/navbar.html" %}
-    <h1 id="song-label" contenteditable="true" placeholder="Enter Song Label">{{ songLabel }}</h1>
-    <div class="container">
-        <pre id="pattern-edit" contenteditable="true" placeholder="No Pattern">{{ pattern }}</pre>
+    <div id="edit-mode" hidden>
+        <h1 id="song-label" contenteditable="true" placeholder="Enter Song Label">{{ songLabel }}</h1>
+        <div class="container">
+            <textarea type='text' class='chordeditarea' id='contentArea' placeholder='Enter Chords'>{{ pattern }}</textarea>
+        </div>
+    </div>
+    <div id="search-pattern-mode" hidden>
+        <div id='no-search-results' hidden></div>
+        <div id='spinner-search-results' hidden class='loader'></div>
+        <table id='search-results' class='table table-dark' hidden>
+            <thead style='display:none'>
+                <th scope='col'>Song</th>
+                <th scope='col'>Artist</th>
+                <th scope='col'>rating</th>
+            </thead>
+            <tbody id='search-results-body'>
+            </tbody>
+        </table>
+    </div>
+    <div id="pattern-preview-mode" hidden>
+        PREVIEW
     </div>
 </body>

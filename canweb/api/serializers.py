@@ -9,4 +9,4 @@ class SongDetailSerializer(serializers.ModelSerializer):
 class SongLabelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Song
-        fields = ('label', 'pk')
+        fields = ('label', 'pk', 'pattern')
