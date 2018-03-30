@@ -122,6 +122,7 @@ $('document').ready(function() {
     $('#preview-pattern-mode').attr('hidden', true);
     $('#mi-searchpattern').attr('hidden', false);
     $('#mi-submit').attr('hidden', false);
+    $('#mi-remove').attr('hidden', false);
     miCancel = $('#mi-cancel');
     miCancel.unbind('click');
     autogrow($('#contentArea')[0]);
@@ -143,6 +144,7 @@ $('document').ready(function() {
     $('#preview-pattern-mode').attr('hidden', true);
     $('#mi-searchpattern').attr('hidden', true);
     $('#mi-submit').attr('hidden', true);
+    $('#mi-remove').attr('hidden', true);
     miCancel = $('#mi-cancel');
     miCancel.unbind('click');
     miCancel.click(function() {
@@ -156,6 +158,7 @@ $('document').ready(function() {
     $('#preview-pattern-mode').attr('hidden', false);
     $('#mi-searchpattern').attr('hidden', true);
     $('#mi-submit').attr('hidden', false);
+    $('#mi-remove').attr('hidden', true);
     
     miCancel = $('#mi-cancel');
     miCancel.unbind('click');
@@ -171,6 +174,20 @@ $('document').ready(function() {
       enableEditMode();
     });
   }
-  
   enableEditMode();
+
+  $('#mi-remove').click(function() {
+    $.ajax({
+      method: 'DELETE',
+      url: '/api/song/' + songId + '.json',
+      crossDomain: true,
+      dataType: "json",
+      success: function(data) {
+        window.location = '/view/song/list'
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) { 
+        alert("unable to remove.")
+      },
+    });
+  })
 });

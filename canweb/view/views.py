@@ -15,7 +15,8 @@ def edit_song(request, pk):
     "menuitems": [
       { "label": "Submit", "id": "mi-submit" },
       { "label": "Cancel", "id": "mi-cancel" },
-      { "label": "Search Pattern", "id": "mi-searchpattern" }
+      { "label": "Search Pattern", "id": "mi-searchpattern" },
+      { "label": "Remove", "id": "mi-remove" }
     ]
   }
   return render(request, 'view/song_edit.html', context=context)
