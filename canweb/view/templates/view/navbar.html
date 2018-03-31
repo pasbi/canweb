@@ -6,8 +6,9 @@
     <div class="collapse navbar-collapse" id="mainMenu">
         <ul class="navbar-nav mr-auto">
             {% for menuitem in menuitems %}
-                <li class="nav-item">
-                    <a class="nav-link" id="{{ menuitem.id }}">{{ menuitem.label }}</a>
+                <li class="nav-item nav-link" 
+                    id="{{ menuitem.id }}">
+                    {{ menuitem.label }}
                 </li>
             {% endfor %}
         </ul>

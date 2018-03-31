@@ -4,16 +4,18 @@ function loadSongList(ajaxResult) {
     items.push( "<li"
                 + " onclick='viewSong(" + val['pk'] + ")'"
                 + " class='list-group-item clearfix'"
-                + ">" 
-                + val['label']
+                + " id='song-" + val['pk'] + "'>" 
                 + "</li>");
   });
   if (items.length > 0) {
     $('#song-list').html(items.join(''));
+    $.each(ajaxResult, function(i, val) {
+      $('#song-' + val['pk']).text(val['label']);
+    });
     $('#song-list').removeAttr('hidden');
   } else {
     $('#no-songs-placeholder').removeAttr('hidden');
-  }
+  }  
 }
 
 function viewSong(songId) {

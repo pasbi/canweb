@@ -4,5 +4,5 @@
 }
 
 [placeholder]:empty:focus:before {
-    content: "";
+    content: "<br>";
 }

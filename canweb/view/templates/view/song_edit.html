@@ -8,22 +8,24 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "view/css/chordeditarea.css" %}">
-    <link rel="stylesheet" type="text/css" href="{% static "view/css/contenteditable_placeholder.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "view/css/view.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "view/css/spinner.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "view/css/snackbar.css" %}">
     <script>
         songId = {{ pk }};
     </script>
     <script type="text/javascript" src="{% static "js/jquery-3.3.1.js" %}"></script>
     <script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
+    <script type="text/javascript" src="{% static "view/js/snackbar.js" %}"></script>
     <script type="text/javascript" src="{% static "view/js/song_edit.js" %}"></script>
 
 </head>
 <body>
     {% include "view/navbar.html" %}
     <div id="edit-mode" hidden>
-        <h1 id="song-label" contenteditable="true" placeholder="Enter Song Label">{{ songLabel }}</h1>
+        <input type='text' id="songLabel" placeholder="Enter Song Label" value="{{ songLabel }}"></input>
         <div class="container">
-            <textarea type='text' class='chordeditarea' id='contentArea' placeholder='Enter Chords'>{{ pattern }}</textarea>
+            <textarea type='text' id='patternEdit' placeholder='Enter Chords'>{{ pattern }}</textarea>
         </div>
     </div>
     <div id="search-pattern-mode" hidden>
@@ -42,4 +44,5 @@
     <div id="preview-pattern-mode" hidden>
         <pre id='preview-pattern-content'></pre>
     </div>
+    <div id='snackbar'></div>
 </body>

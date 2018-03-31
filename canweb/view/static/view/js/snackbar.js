@@ -1,5 +1,7 @@
-function showSnackbar(id) {
-    var x = document.getElementById(id)
-    x.className = "show";
-    setTimeout(function(){ x.className = x.className.replace("show", ""); }, 3000);
+function showSnackbar(text) {
+  $("#snackbar").text(text);
+  $("#snackbar").addClass('show');
+  setTimeout(function() {
+    $("#snackbar").removeClass('show');
+  }, 3000);
 }

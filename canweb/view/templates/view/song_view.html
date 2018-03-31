@@ -20,6 +20,10 @@
     {% include "view/navbar.html" %}
     <h1 id="song-label" placeholder="Unnamed Song">{{ songLabel }}</h1>
     <div class="container">
-        <pre>{{ formattedPattern|safe }}</pre>
+        {% if formattedPattern %}
+            <pre>{{ formattedPattern|safe }}</pre>
+        {% else %}
+            <div>Empty Pattern</div>
+        {% endif %}
     </div>
 </body>

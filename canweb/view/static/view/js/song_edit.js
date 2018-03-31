@@ -4,11 +4,11 @@ $('document').ready(function() {
   }
 
   function patternContent() {
-    return $('#contentArea').val();
+    return $('#patternEdit').val();
   }
 
   function songLabel() {
-    return $('#song-label').text()
+    return $('#songLabel').val()
   }
 
   function submitFromEdit() {
@@ -25,21 +25,24 @@ $('document').ready(function() {
         gotoView();
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) { 
-        alert("unable to submit.")
-        alert(JSON.stringify(XMLHttpRequest));
-        alert(JSON.stringify(textStatus));
-        alert(JSON.stringify(errorThrown)); 
+        showSnackbar("Unable to submit. Label must not be empty.");
+        // alert("unable to submit.")
+        // alert(JSON.stringify(XMLHttpRequest));
+        // alert(JSON.stringify(textStatus));
+        // alert(JSON.stringify(errorThrown)); 
       },
     });
   }
 
   function submitFromPreview() {
-    $('#contentArea').val($('#preview-pattern-content').text())
+    $('#patternEdit').val($('#preview-pattern-content').text())
   }
 
   $('#mi-searchpattern').click(function() {
-    enableSearchMode();
-    loadSearchResults(songLabel());
+    if (!$('#mi-searchpattern').hasClass('disabled')) {
+      enableSearchMode();
+      loadSearchResults(songLabel());
+    }
   })
 
   function autogrow(element) {
@@ -47,13 +50,20 @@ $('document').ready(function() {
     element.style.height = (element.scrollHeight + 10)+"px";
   }
 
-  $('#contentArea').on('keyup', function() {
+  $('#patternEdit').on('keyup', function() {
     autogrow(this);
   });
-  $('#song-label').on('keyup', function() {
-    var labelIsValid = ($(this).text() == "");
-    $('#mi-searchpattern').attr('disabled', !labelIsValid);
-  });
+
+  function updateMiSearchPatternEnabled() {
+    if ($('#songLabel').val() == "") {
+      $('#mi-searchpattern').addClass('disabled');
+    } else {
+      $('#mi-searchpattern').removeClass('disabled');
+    }
+  }
+
+  $('#songLabel').on('keyup', updateMiSearchPatternEnabled);
+  updateMiSearchPatternEnabled();
 
   function loadSearchResults(query) {
     $('#spinner-search-results').attr('hidden', false);
@@ -129,7 +139,7 @@ $('document').ready(function() {
     $('#mi-remove').attr('hidden', false);
     miCancel = $('#mi-cancel');
     miCancel.unbind('click');
-    autogrow($('#contentArea')[0]);
+    autogrow($('#patternEdit')[0]);
     miCancel.click(function() {
       gotoView();
     });
@@ -192,5 +202,5 @@ $('document').ready(function() {
         // alert("unable to remove.")
       },
     });
-  })
+  });
 });
