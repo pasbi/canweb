@@ -2,7 +2,7 @@ function loadSongList(ajaxResult) {
   items = [];
   $.each(ajaxResult, function(i, val) {
     items.push( "<li"
-                + " onclick='onClickSong(" + val['pk'] + ")'"
+                + " onclick='viewSong(" + val['pk'] + ")'"
                 + " class='list-group-item clearfix'"
                 + ">" 
                 + val['label']
@@ -16,7 +16,7 @@ function loadSongList(ajaxResult) {
   }
 }
 
-function onClickSong(songId) {
+function viewSong(songId) {
   window.location = '/view/song/view/' + songId + "/";
 }
 
@@ -27,5 +27,22 @@ $('document').ready(function () {
       success: function(result) {
         loadSongList(result);
       }
+    });
+
+    $('#mi-create').click(function() {
+      $.ajax({
+        url: '/api/song/list.json',
+        crossDomain: true,
+        dataType: "json",
+        data: { 
+          label: "Unnamed Song"
+        },
+        method: "POST",
+        success: function(result) {
+          viewSong(result['pk']);
+        },
+        error: function() {
+        }
+      });
     });
 });

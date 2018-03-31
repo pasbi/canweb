@@ -26,9 +26,9 @@ $('document').ready(function() {
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) { 
         alert("unable to submit.")
-        // alert(JSON.stringify(XMLHttpRequest));
-        // alert(JSON.stringify(textStatus));
-        // alert(JSON.stringify(errorThrown)); 
+        alert(JSON.stringify(XMLHttpRequest));
+        alert(JSON.stringify(textStatus));
+        alert(JSON.stringify(errorThrown)); 
       },
     });
   }
@@ -49,6 +49,10 @@ $('document').ready(function() {
 
   $('#contentArea').on('keyup', function() {
     autogrow(this);
+  });
+  $('#song-label').on('keyup', function() {
+    var labelIsValid = ($(this).text() == "");
+    $('#mi-searchpattern').attr('disabled', !labelIsValid);
   });
 
   function loadSearchResults(query) {
@@ -110,7 +114,7 @@ $('document').ready(function() {
       },
       error: function() {
         $('#spinner-search-results').attr('hidden', true);
-        alert("fail");
+        // alert("fail");
         enableSearchMode();
       }
     });
@@ -134,7 +138,6 @@ $('document').ready(function() {
     miSubmit.unbind('click');
     miSubmit.click(function() {
       submitFromEdit();
-      gotoView();
     });
   }
 
@@ -186,7 +189,7 @@ $('document').ready(function() {
         window.location = '/view/song/list'
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) { 
-        alert("unable to remove.")
+        // alert("unable to remove.")
       },
     });
   })
