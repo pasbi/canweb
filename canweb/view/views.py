@@ -9,6 +9,7 @@ def edit_song(request, pk):
     "pk": pk,
     "pattern": song.pattern,
     "songLabel": song.label,
+    "justCreated": "true" if song.label == "" and song.pattern == "" else "false",
     "menuitems": [
       { "label": "Submit", "id": "mi-submit" },
       { "label": "Cancel", "id": "mi-cancel" },

@@ -58,16 +58,19 @@ $('document').ready(function() {
     autogrow(this);
   });
 
-  function updateMiSearchPatternEnabled() {
+  function updateMiNavBarEnabled() {
     if ($('#songLabel').val() == "") {
       $('#mi-searchpattern').addClass('disabled');
+      $('#mi-submit').addClass('disabled');
     } else {
       $('#mi-searchpattern').removeClass('disabled');
+      $('#mi-submit').removeClass('disabled');
     }
   }
 
-  $('#songLabel').on('keyup', updateMiSearchPatternEnabled);
-  updateMiSearchPatternEnabled();
+  $('#songLabel').on('keyup', updateMiNavBarEnabled);
+  $('#patternEdit').on('keyup', updateMiNavBarEnabled);
+  updateMiNavBarEnabled();
 
   function loadSearchResults(query) {
     $('#spinner-search-results').attr('hidden', false);
@@ -147,13 +150,19 @@ $('document').ready(function() {
     miCancel.unbind('click');
     autogrow($('#patternEdit')[0]);
     miCancel.click(function() {
-      gotoView();
+      if (justCreated) {
+        deleteSong();
+      } else {
+        gotoView();
+      }
     });
 
     miSubmit = $('#mi-submit');
     miSubmit.unbind('click');
     miSubmit.click(function() {
-      submitFromEdit();
+      if (!$('#mi-submit').hasClass('disabled')) {
+        submitFromEdit();
+      }
     });
   }
 
@@ -199,7 +208,7 @@ $('document').ready(function() {
   }
   enableEditMode();
 
-  $('#mi-remove').click(function() {
+  function deleteSong() {
     $.ajax({
       method: 'DELETE',
       url: '/api/song/' + songId + '.json',
@@ -212,6 +221,11 @@ $('document').ready(function() {
         // alert("unable to remove.")
       },
     });
+    
+  }
+
+  $('#mi-remove').click(function() {
+    deleteSong();
   });
 
   function transpose(d) {
@@ -224,11 +238,9 @@ $('document').ready(function() {
         "pattern": patternContent()
       },
       success: function(data) {
-        alert("success");
         patternContent(data["pattern"])
       },
       error: function(XMLHttpRequest, textStatus, errorThrown) {
-        alert("transpose failed");
       },
     });
   }

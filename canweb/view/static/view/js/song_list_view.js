@@ -22,6 +22,10 @@ function viewSong(songId) {
   window.location = '/view/song/view/' + songId + "/";
 }
 
+function editSong(songId) {
+  window.location = '/view/song/edit/' + songId + "/";
+}
+
 $('document').ready(function () {
     $.ajax({
       url: '/api/song/list.json',
@@ -37,13 +41,14 @@ $('document').ready(function () {
         crossDomain: true,
         dataType: "json",
         data: { 
-          label: "Unnamed Song"
+          label: ""
         },
         method: "POST",
         success: function(result) {
-          viewSong(result['pk']);
+          editSong(result['pk']);
         },
         error: function() {
+          alert("Unable to create song")
         }
       });
     });
