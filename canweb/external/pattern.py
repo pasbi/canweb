@@ -185,7 +185,7 @@ class Line:
                     c = t.toString()
                     space_account += t.target_length - len(c)
                     fill = " " * max(0, space_account)
-                    space_account = 0
+                    space_account = min(space_account, 0)
                     line += markup.get("chord/prefix", "")
                     line += c
                     line += markup.get("chord/postfix", "")
