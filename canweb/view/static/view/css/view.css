@@ -26,3 +26,24 @@
 	border-color: transparent;
 	resize: none;
 }
+
+.chord {
+	background: transparent;
+	font-weight: bold;
+	color: red;
+}
+
+.headline {
+	background: blue;
+	font-weight: bold;
+	border-color: red;
+  display: block;
+	color: yellow;
+	white-space:nowrap;
+}
+
+.chordline {
+  display: block;
+  background: rgba(255, 255, 0, 0.1);
+  white-space:nowrap;
+}

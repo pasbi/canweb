@@ -39,6 +39,10 @@ SPLIT_PATTERN = "(" + "|".join(
     ) + ")+"
 WORD_PATTERN = "^[a-zA-Z'].*"
 
+HEADLINE_KEYWORDS = r"(pre|post)?\W*(verse|refrain|chorus|bridge|intro|outro)(\W|[0-9_IVX])*"
+HEADLINE_BRACKETS = r"(\[.*\])"
+HEADLINE_PATTERN = r"^\W*({}|{})\W*$".format(HEADLINE_KEYWORDS, HEADLINE_BRACKETS)
+
 class Chord:
     def __init__(self, token):
         self.target_length = len(token)
@@ -161,12 +165,11 @@ class Line:
         }
         lens = { key: len(list(filter(preds[key], self.tokens))) 
                  for key in preds.keys() }
-        self.isChordLine = lens["chord"] + lens["other"] >= lens["word"];
 
-    def toString(self, start_tag, end_tag, transpose):
-        if not self.isChordLine:
-            return self.line
-        else:
+        self.isChordLine = lens["chord"] + lens["other"] >= lens["word"] and lens["chord"] > 0
+
+    def toString(self, markup, transpose):
+        if self.isChordLine:
             def toString(token):
                 if type(token) is Chord:
                     token.transpose(transpose)
@@ -175,37 +178,45 @@ class Line:
                     return token
 
             space_account = 0
-            line = ""
+            line = markup.get("chordline/prefix", "")
             for t in self.tokens:
                 if type(t) is Chord:
                     t.transpose(transpose)
                     c = t.toString()
                     space_account += t.target_length - len(c)
-                    if space_account > 0:
-                        fill = " " * space_account
-                        space_account = 0
-                    else:
-                        fill = ""
-                    line += start_tag + c + end_tag + fill
+                    fill = " " * max(0, space_account)
+                    space_account = 0
+                    line += markup.get("chord/prefix", "")
+                    line += c
+                    line += markup.get("chord/postfix", "")
+                    line += fill
                 else:
-                    # make t never empty
+                    # t shall never be empty, else two chords are not separated anymore
                     # remove leading spaces until account is balanced
                     while len(t) > 1 and t[0] == " " and space_account < 0:
                         space_account += 1
                         t = t[1:]
                     line += t
-            return line
+            line += markup.get("chordline/postfix", "")
+            return line + markup.get("chordline/linebreak", "\n")
+        elif re.match(HEADLINE_PATTERN, self.line, re.IGNORECASE):
+            line = ""
+            line += markup.get("headline/prefix", "")
+            line += self.line
+            line += markup.get("headline/postfix", "")
+            return line + markup.get("headline/linebreak", "\n")
+        else:
+            return self.line + markup.get("default/linebreak", "\n")
 
 class Pattern:
     def __init__(self, pattern):
-        pattern.replace("\r\n", "\n")
-        self.lines = pattern.split("\n")
-        self.lines = list(map(Line, self.lines))
-        self.start_tag = ""
-        self.end_tag = ""
-        self.linebreak = "\n"
+        pattern = pattern.replace("\r\n", "\n")
+        self.lines = list(map(Line, pattern.split("\n")))
+        self.markup = {}
         self.transpose = 0
 
     def toString(self):
-        f = lambda l: l.toString(self.start_tag, self.end_tag, self.transpose)
-        return self.linebreak.join(map(f, self.lines))
+        return "".join(map(
+                    lambda line: 
+                        line.toString(self.markup, self.transpose),
+                    self.lines ))

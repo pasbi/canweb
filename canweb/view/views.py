@@ -22,8 +22,15 @@ def view_song(request, pk):
   song = Song.objects.get(pk=pk)
   pattern = Pattern(song.pattern)
   pattern.linebreak = "<br>"
-  pattern.start_tag = "<b>"
-  pattern.end_tag = "</b>"
+  pattern.markup["chord/prefix"] = "<span class='chord'>"
+  pattern.markup["chord/postfix"] = "</span class='chord'>"
+  pattern.markup["headline/prefix"] = "<span class='headline'>"
+  pattern.markup["headline/postfix"] = "</span class='headline'>"
+  pattern.markup["chordline/prefix"] = "<span class='chordline'>"
+  pattern.markup["chordline/postfix"] = "</span class='chordline'>"
+  pattern.markup["chordline/linebreak"] = ""    # style='display: block'
+  pattern.markup["headline/linebreak"] = ""     # style='display: block'
+  pattern.markup["default/linebreak"] = "\n"
   context = {
     "pk": pk,
     "formattedPattern": pattern.toString(),
