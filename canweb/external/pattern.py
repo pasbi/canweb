@@ -212,11 +212,9 @@ class Pattern:
     def __init__(self, pattern):
         pattern = pattern.replace("\r\n", "\n")
         self.lines = list(map(Line, pattern.split("\n")))
-        self.markup = {}
-        self.transpose = 0
 
-    def toString(self):
+    def toString(self, markup, transpose):
         return "".join(map(
                     lambda line: 
-                        line.toString(self.markup, self.transpose),
+                        line.toString(markup, transpose),
                     self.lines ))

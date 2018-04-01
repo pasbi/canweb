@@ -4,7 +4,12 @@ $('document').ready(function() {
   }
 
   function patternContent() {
-    return $('#patternEdit').val();
+    var patternEdit = $('#patternEdit');
+    if (arguments.length == 1) {
+      patternEdit.val(arguments[0]);
+    } else {
+      return patternEdit.val();
+    }
   }
 
   function songLabel() {
@@ -34,10 +39,6 @@ $('document').ready(function() {
     });
   }
 
-  function submitFromPreview() {
-    $('#patternEdit').val($('#preview-pattern-content').text())
-  }
-
   $('#mi-searchpattern').click(function() {
     if (!$('#mi-searchpattern').hasClass('disabled')) {
       enableSearchMode();
@@ -46,8 +47,11 @@ $('document').ready(function() {
   })
 
   function autogrow(element) {
+    var sx = window.scrollX;
+    var sy = window.scrollY;
     element.style.height = "5px";
     element.style.height = (element.scrollHeight + 10)+"px";
+    window.scrollTo(sx, sy);
   }
 
   $('#patternEdit').on('keyup', function() {
@@ -137,6 +141,8 @@ $('document').ready(function() {
     $('#mi-searchpattern').attr('hidden', false);
     $('#mi-submit').attr('hidden', false);
     $('#mi-remove').attr('hidden', false);
+    $('#mi-trup').attr('hidden', false);
+    $('#mi-trdown').attr('hidden', false);
     miCancel = $('#mi-cancel');
     miCancel.unbind('click');
     autogrow($('#patternEdit')[0]);
@@ -158,6 +164,8 @@ $('document').ready(function() {
     $('#mi-searchpattern').attr('hidden', true);
     $('#mi-submit').attr('hidden', true);
     $('#mi-remove').attr('hidden', true);
+    $('#mi-trup').attr('hidden', true);
+    $('#mi-trdown').attr('hidden', true);
     miCancel = $('#mi-cancel');
     miCancel.unbind('click');
     miCancel.click(function() {
@@ -172,6 +180,8 @@ $('document').ready(function() {
     $('#mi-searchpattern').attr('hidden', true);
     $('#mi-submit').attr('hidden', false);
     $('#mi-remove').attr('hidden', true);
+    $('#mi-trup').attr('hidden', true);
+    $('#mi-trdown').attr('hidden', true);
     
     miCancel = $('#mi-cancel');
     miCancel.unbind('click');
@@ -183,7 +193,7 @@ $('document').ready(function() {
     miSubmit = $('#mi-submit');
     miSubmit.unbind('click');
     miSubmit.click(function() {
-      submitFromPreview();
+      patternContent($('#preview-pattern-content').text())
       enableEditMode();
     });
   }
@@ -202,5 +212,31 @@ $('document').ready(function() {
         // alert("unable to remove.")
       },
     });
+  });
+
+  function transpose(d) {
+    $.ajax({
+      method: 'POST',
+      url: '/api/transpose/' + d,
+      crossDomain: true,
+      dataType: "json",
+      data: {
+        "pattern": patternContent()
+      },
+      success: function(data) {
+        alert("success");
+        patternContent(data["pattern"])
+      },
+      error: function(XMLHttpRequest, textStatus, errorThrown) {
+        alert("transpose failed");
+      },
+    });
+  }
+
+  $('#mi-trup').click(function() {
+    transpose(1);
+  });
+  $('#mi-trdown').click(function() {
+    transpose(11);
   });
 });

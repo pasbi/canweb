@@ -8,9 +8,15 @@ from rest_framework.reverse import reverse
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework.renderers import JSONRenderer
 from django.http import HttpResponse
-import external.get_pattern
+from django.http import HttpResponseBadRequest
+from django.http import HttpResponseServerError
+from django.http import JsonResponse
+from external.pattern import Pattern
+from external import service_interface
 import json
 import base64
+import json
+import traceback
 
 class SongList(generics.ListCreateAPIView):
     queryset = Song.objects.all()
@@ -22,12 +28,30 @@ class SongDetail(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = SongDetailSerializer
 
 def searchPattern(request, service, query):
-  search_results = external.get_pattern.search(service, query)
+  search_results = service_interface.search(service, query)
   search_results = json.dumps(search_results)
   return HttpResponse(search_results)
 
 def getPattern(request, service, query):
   url = base64.b64decode(query.encode('utf-8')).decode('utf-8')
-  pattern = external.get_pattern.getPattern(service, url)
+  pattern = service_interface.getPattern(service, url)
   result = json.dumps({"pattern": pattern})
   return HttpResponse(result)
+
+def transpose(request, d):
+  response = HttpResponse()
+  try:
+    pattern = request.POST["pattern"]
+  except Exception:
+    traceback.print_exc();
+    print(request.POST)
+    return HttpResponseBadRequest()
+
+  try:
+    pattern = Pattern(pattern).toString(markup={}, transpose=d)
+  except Exception:
+    traceback.print_exc();
+    return HttpResponseServerError()
+
+  print(pattern)
+  return JsonResponse({"pattern": pattern})
