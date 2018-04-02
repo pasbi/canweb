@@ -3,8 +3,8 @@ function loadSongList(ajaxResult) {
   $.each(ajaxResult, function(i, val) {
     items.push( "<li"
                 + " onclick='viewSong(" + val['pk'] + ")'"
-                + " class='list-group-item clearfix'"
-                + " id='song-" + val['pk'] + "'>" 
+                + " class='list-group-item clearfix song-item'"
+                + " id='song-" + val['pk'] + "'>"
                 + "</li>");
   });
   if (items.length > 0) {
@@ -52,4 +52,6 @@ $('document').ready(function () {
         }
       });
     });
+
+    $('#title-text').text("List");
 });

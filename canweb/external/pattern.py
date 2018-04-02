@@ -18,6 +18,7 @@ IGNORE_AFTER_PATTERN = '(' \
             re.escape("]"),
             re.escape("}"),
             re.escape(">"),
+            re.escape(":"),
             "\\(\\w*\\)",
             "\\[\\w*\\]"
         ]) \
@@ -37,7 +38,7 @@ SHIFTER = {
 SPLIT_PATTERN = "(" + "|".join(
     list(map(re.escape, ["|", ",", "-", "/", "*", "`", "'"])) + ["\\s"]
     ) + ")+"
-WORD_PATTERN = "^[a-zA-Z'].*"
+WORD_PATTERN = IGNORE_BEFORE_PATTERN + "[a-zA-Z'].*" 
 
 HEADLINE_KEYWORDS = r"(pre|post)?\W*(verse|refrain|chorus|bridge|intro|outro)(\W|[0-9_IVX])*"
 HEADLINE_BRACKETS = r"(\[.*\])"

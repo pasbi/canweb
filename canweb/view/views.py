@@ -11,12 +11,12 @@ def edit_song(request, pk):
     "songLabel": song.label,
     "justCreated": "true" if song.label == "" and song.pattern == "" else "false",
     "menuitems": [
-      { "label": "Submit", "id": "mi-submit" },
-      { "label": "Cancel", "id": "mi-cancel" },
-      { "label": "Search Pattern", "id": "mi-searchpattern" },
-      { "label": "Remove", "id": "mi-remove" },
-      { "label": "Transpose up", "id": "mi-trup" },
-      { "label": "Transpose down", "id": "mi-trdown" }
+      { "label": "✓", "id": "mi-submit" },
+      { "label": "✗", "id": "mi-cancel" },
+      { "label": "🔎", "id": "mi-searchpattern" },
+      { "label": "🗑", "id": "mi-remove" },
+      { "label": "♯", "id": "mi-trup" },
+      { "label": "♭", "id": "mi-trdown" }
     ]
   }
   return render(request, 'view/song_edit.html', context=context)

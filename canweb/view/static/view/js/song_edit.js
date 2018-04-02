@@ -164,9 +164,12 @@ $('document').ready(function() {
         submitFromEdit();
       }
     });
+
+    $('#title-text').text("Edit");
   }
 
   function enableSearchMode() {
+    $('#title-text').text("Search '" + songLabel() + "'");
     $('#edit-mode').attr('hidden', true);
     $('#search-pattern-mode').attr('hidden', false);
     $('#preview-pattern-mode').attr('hidden', true);
@@ -183,6 +186,7 @@ $('document').ready(function() {
   }
 
   function enablePreviewMode(previewPattern) {
+    $('#title-text').text("Preview " + "");
     $('#edit-mode').attr('hidden', true);
     $('#search-pattern-mode').attr('hidden', true);
     $('#preview-pattern-mode').attr('hidden', false);
