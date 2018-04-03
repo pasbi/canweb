@@ -18,5 +18,8 @@
         <img src={% static "svg/logo.svg" %} height="50px" width="50px">
         <span id="title-text"></span>
     </a>
+    {% if searchField %}
+          <input id="search-field" class="form-control" placeholder="Search" type="text">
+    {% endif %}
 </div>
 

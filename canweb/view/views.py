@@ -47,7 +47,8 @@ def view_song(request, pk):
 def view_song_list(request):
     context = {
       "menuitems": [
-        { "label": "Create", "id": "mi-create" }
-      ]
+        { "label": "Create", "id": "mi-create" },
+      ],
+      "searchField": True
     }
     return render(request, 'view/song_list_view.html', context=context)

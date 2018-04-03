@@ -54,4 +54,16 @@ $('document').ready(function () {
     });
 
     $('#title-text').text("List");
+
+    function applyFilter(text) {
+      var listItems = $("#song-list li");
+      listItems.each(function(i, li) {
+        var isHidden = $(li).text().search(new RegExp(text, 'i')) == -1;
+        $(li).attr('hidden', isHidden);
+      });
+    }
+
+    $('#search-field').on('keyup', function() {
+      applyFilter($(this).val())
+    })
 });
