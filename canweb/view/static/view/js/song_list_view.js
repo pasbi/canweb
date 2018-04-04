@@ -15,11 +15,22 @@ function loadSongList(ajaxResult) {
     $('#song-list').removeAttr('hidden');
   } else {
     $('#no-songs-placeholder').removeAttr('hidden');
-  }  
+  }
 }
 
 function viewSong(songId) {
-  window.location = '/view/song/view/' + songId + "/";
+  var viewurl = '/view/song/view/' + songId + "/";
+  $.ajax({
+    url: '/api/program/' + songId,
+    crossDomain: true,
+    method: "GET",
+    success: function(result) {
+      window.location = viewurl;
+    },
+    error: function() {
+      window.location = viewurl;
+    }
+  });
 }
 
 function editSong(songId) {

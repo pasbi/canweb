@@ -8,7 +8,8 @@ urlpatterns = [
     url(r'song/(?P<pk>[0-9]+)/$', views.SongDetail.as_view()),
     path(r'search/<str:service>/<str:query>/', views.searchPattern),
     path(r'pattern/<str:service>/<str:query>/', views.getPattern),
-    path(r'transpose/<int:d>', views.transpose)
+    path(r'transpose/<int:d>', views.transpose),
+    path(r'program/<int:pk>', views.sendMidiProgram)
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

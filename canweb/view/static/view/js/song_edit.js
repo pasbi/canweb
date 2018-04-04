@@ -255,4 +255,7 @@ $('document').ready(function() {
   $('#mi-trdown').click(function() {
     transpose(11);
   });
+  $('#mi-updatemidi').click(function() {
+    alert("Dialog to swt midi program. Not implemented yet.")
+  });
 });

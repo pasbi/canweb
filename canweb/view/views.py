@@ -16,7 +16,8 @@ def edit_song(request, pk):
       { "label": "🔎", "id": "mi-searchpattern" },
       { "label": "🗑", "id": "mi-remove" },
       { "label": "♯", "id": "mi-trup" },
-      { "label": "♭", "id": "mi-trdown" }
+      { "label": "♭", "id": "mi-trdown" },
+      { "label": "🎘", "id": "mi-updatemidi" }
     ]
   }
   return render(request, 'view/song_edit.html', context=context)
@@ -39,7 +40,8 @@ def view_song(request, pk):
     "formattedPattern": pattern.toString(markup=markup, transpose=0),
     "songLabel": song.label,
     "menuitems": [
-      { "label": "Edit", "id": "mi-edit" }
+      { "label": "Edit", "id": "mi-edit" },
+      { "label": "🎘", "id": "mi-updatemidi" }
     ]
   }
   return render(request, 'view/song_view.html', context=context)

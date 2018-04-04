@@ -13,6 +13,7 @@ from django.http import HttpResponseServerError
 from django.http import JsonResponse
 from external.pattern import Pattern
 from external import service_interface
+from external.midicontroller import MidiController
 import json
 import base64
 import json
@@ -55,3 +56,25 @@ def transpose(request, d):
 
   print(pattern)
   return JsonResponse({"pattern": pattern})
+
+def sendMidiProgram(request, pk):
+  try:
+    program = json.loads(Song.objects.get(pk=pk).midiCommand)
+  except Exception:
+    print("error decoding program")
+    traceback.print_exc();
+    print(request.POST)
+    return HttpResponseBadRequest()
+
+  mc = MidiController(1, '/dev/null')
+  try:
+    mc.applyProgram(program)
+  except Exception:
+    print("Failed to send midi program")
+    traceback.print_exc();
+    print(request.POST)
+    return HttpResponseBadRequest()
+
+  return HttpResponse({"status": "success"})
+
+
