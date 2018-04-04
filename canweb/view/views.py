@@ -10,15 +10,6 @@ def edit_song(request, pk):
     "pattern": song.pattern,
     "songLabel": song.label,
     "justCreated": "true" if song.label == "" and song.pattern == "" else "false",
-    "menuitems": [
-      { "label": "✓", "id": "mi-submit" },
-      { "label": "✗", "id": "mi-cancel" },
-      { "label": "🔎", "id": "mi-searchpattern" },
-      { "label": "🗑", "id": "mi-remove" },
-      { "label": "♯", "id": "mi-trup" },
-      { "label": "♭", "id": "mi-trdown" },
-      { "label": "🎘", "id": "mi-updatemidi" }
-    ]
   }
   return render(request, 'view/song_edit.html', context=context)
 
@@ -38,19 +29,12 @@ def view_song(request, pk):
   context = {
     "pk": pk,
     "formattedPattern": pattern.toString(markup=markup, transpose=0),
-    "songLabel": song.label,
-    "menuitems": [
-      { "label": "Edit", "id": "mi-edit" },
-      { "label": "🎘", "id": "mi-updatemidi" }
-    ]
+    "songLabel": song.label
   }
   return render(request, 'view/song_view.html', context=context)
 
 def view_song_list(request):
     context = {
-      "menuitems": [
-        { "label": "Create", "id": "mi-create" },
-      ],
       "searchField": True
     }
     return render(request, 'view/song_list_view.html', context=context)

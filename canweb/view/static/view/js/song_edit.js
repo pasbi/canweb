@@ -1,4 +1,16 @@
 $('document').ready(function() {
+
+  items = [];
+  items.push("<li class='nav-item'><a class='nav-link' id='mi-submit'>✓</a></li>");
+  items.push("<li class='nav-item'><a class='nav-link' id='mi-cancel'>✗</a></li>");
+  items.push("<li class='nav-item'><a class='nav-link' id='mi-searchpattern'>🔎</a></li>");
+  items.push("<li class='nav-item'><a class='nav-link' id='mi-remove'>🗑</a></li>");
+  items.push("<li class='nav-item'><a class='nav-link' id='mi-trup'>♯</a></li>");
+  items.push("<li class='nav-item'><a class='nav-link' id='mi-trdown'>♭</a></li>");
+  items.push("<li class='nav-item'><a class='nav-link' id='mi-updatemidi'>🎘</a></li>");
+  $('#navbar-ul').html(items.join(''))
+  // $('#mi-updatemidi').addClass('dropdown-menu');
+
   function gotoView() {
     window.location = "/view/song/view/" + songId
   }
@@ -255,7 +267,7 @@ $('document').ready(function() {
   $('#mi-trdown').click(function() {
     transpose(11);
   });
-  $('#mi-updatemidi').click(function() {
-    alert("Dialog to swt midi program. Not implemented yet.")
-  });
+  
+
+
 });

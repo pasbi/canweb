@@ -38,6 +38,11 @@ function editSong(songId) {
 }
 
 $('document').ready(function () {
+
+    items = []
+    items.push("<li class='nav-item'><a class='nav-link' id='mi-create'>Create</a></li>");
+    $('#navbar-ul').html(items.join(''))
+
     $.ajax({
       url: '/api/song/list.json',
       method: "GET",
