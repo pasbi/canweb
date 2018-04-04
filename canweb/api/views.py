@@ -58,12 +58,26 @@ def transpose(request, d):
   return JsonResponse({"pattern": pattern})
 
 def sendMidiProgram(request, pk):
-  try:
-    program = json.loads(Song.objects.get(pk=pk).midiCommand)
-  except Exception:
-    print("error decoding program")
-    traceback.print_exc();
-    print(request.POST)
+  def getProgram(pk):
+    program = Song.objects.get(pk=pk).midiCommand
+    assert(type(program) == str)
+    if program == "":
+      print("No program set.")
+      return None
+    try:
+      program = json.loads(program)
+      if program['isValid'] == False:
+        print("invalid program")
+        return None
+    except Exception:
+      print("error decoding program")
+      traceback.print_exc();
+      print(request.POST)
+      return None
+    return program
+
+  program = getProgram(pk)
+  if program == None:
     return HttpResponseBadRequest()
 
   mc = MidiController(1, '/dev/null')
