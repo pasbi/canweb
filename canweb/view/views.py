@@ -9,6 +9,7 @@ def edit_song(request, pk):
     "pk": pk,
     "pattern": song.pattern,
     "songLabel": song.label,
+    "songProgram": song.midiCommand,
     "justCreated": "true" if song.label == "" and song.pattern == "" else "false",
   }
   return render(request, 'view/song_edit.html', context=context)

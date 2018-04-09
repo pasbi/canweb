@@ -12,8 +12,9 @@
     <link rel="stylesheet" type="text/css" href="{% static "view/css/spinner.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "view/css/snackbar.css" %}">
     <script>
-        songId = {{ pk }};
-        justCreated = {{ justCreated }};
+        songId = {{ pk | safe }};
+        justCreated = {{ justCreated | safe }};
+        songProgram = {{ songProgram | safe }};
     </script>
     <script type="text/javascript" src="{% static "js/jquery-3.3.1.js" %}"></script>
     <script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
@@ -23,59 +24,66 @@
 <body>
     {% include "view/navbar.html" %}
     <div class="container-fluid">
-        <div id="edit-program" hidden>
+        <div id="edit-program" style="display: none;">
             <form>
                 <div class='row'>
-                    <div class='col'>
-                      <div class="form-group">
-                        <label for="select-bank">Bank</label>
-                        <select class="form-control" id="select-bank">
-                          <option>A</option>
-                          <option>B</option>
-                          <option>C</option>
-                          <option>D</option>
-                        </select>
+                  <div class='col'>
+                    <div class="form-group">
+                      <div class="form-control checkbox">
+                        <label><input type="checkbox" id="isValidCheckbox" value="">Enable</label>
                       </div>
                     </div>
-                    <div class='col'>
-                      <div class="form-group">
-                        <label for="select-page">Page</label>
-                        <select class="form-control" id="select-page">
-                          <option>1</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
-                          <option>5</option>
-                          <option>6</option>
-                          <option>7</option>
-                          <option>8</option>
-                          <option>9</option>
-                          <option>10</option>
-                          <option>11</option>
-                          <option>12</option>
-                          <option>13</option>
-                          <option>14</option>
-                          <option>15</option>
-                          <option>16</option>
-                          <option>17</option>
-                          <option>18</option>
-                          <option>19</option>
-                          <option>20</option>
-                        </select>
-                      </div>
+                  </div>
+                  <div class='col'>
+                    <div class="form-group">
+                      <label for="select-bank">Bank</label>
+                      <select class="form-control" id="select-bank">
+                        <option>A</option>
+                        <option>B</option>
+                        <option>C</option>
+                        <option>D</option>
+                      </select>
                     </div>
-                    <div class='col'>
-                      <div class="form-group">
-                        <label for="select-program">Program</label>
-                        <select class="form-control" id="select-program">
-                          <option>1</option>
-                          <option>2</option>
-                          <option>3</option>
-                          <option>4</option>
-                          <option>5</option>
-                        </select>
-                      </div>
+                  </div>
+                  <div class='col'>
+                    <div class="form-group">
+                      <label for="select-page">Page</label>
+                      <select class="form-control" id="select-page">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                        <option>6</option>
+                        <option>7</option>
+                        <option>8</option>
+                        <option>9</option>
+                        <option>10</option>
+                        <option>11</option>
+                        <option>12</option>
+                        <option>13</option>
+                        <option>14</option>
+                        <option>15</option>
+                        <option>16</option>
+                        <option>17</option>
+                        <option>18</option>
+                        <option>19</option>
+                        <option>20</option>
+                      </select>
                     </div>
+                  </div>
+                  <div class='col'>
+                    <div class="form-group">
+                      <label for="select-program">Program</label>
+                      <select class="form-control" id="select-program">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                      </select>
+                    </div>
+                  </div>
                 </div>
             </form>
         </div>

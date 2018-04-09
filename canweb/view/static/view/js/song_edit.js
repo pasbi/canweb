@@ -13,7 +13,24 @@ $('document').ready(function() {
 
 
   $("#mi-toggle-program-edit").click(function() {
-    $("edit-program").removeAttr("hidden");
+    var ep = $("#edit-program")
+    if (ep.is(":visible")) {
+      ep.hide()
+    } else {
+      ep.show()
+
+      try {
+        $('#isValidCheckbox').prop('checked', songProgram['isValid'])
+        $('#select-bank option').removeAttr("selected");
+        $('#select-bank option:eq(' + songProgram['bank'] + ')').attr('selected', 'selected');
+        $('#select-page option').removeAttr("selected");
+        $('#select-page option:eq(' + songProgram['page'] + ')').attr('selected', 'selected');
+        $('#select-program option').removeAttr("selected");
+        $('#select-program option:eq(' + songProgram['program'] + ')').attr('selected', 'selected');
+      } catch (error) {
+        console.log(error);
+      }
+    }
   });
 
   function gotoView() {
