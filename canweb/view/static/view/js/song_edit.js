@@ -7,9 +7,14 @@ $('document').ready(function() {
   items.push("<li class='nav-item'><a class='nav-link' id='mi-remove'>🗑</a></li>");
   items.push("<li class='nav-item'><a class='nav-link' id='mi-trup'>♯</a></li>");
   items.push("<li class='nav-item'><a class='nav-link' id='mi-trdown'>♭</a></li>");
-  items.push("<li class='nav-item'><a class='nav-link' id='mi-updatemidi'>🎘</a></li>");
+  items.push("<li class='nav-item'><a class='nav-link' id='mi-toggle-program-edit'>🎘</a></li>");
   $('#navbar-ul').html(items.join(''))
   // $('#mi-updatemidi').addClass('dropdown-menu');
+
+
+  $("#mi-toggle-program-edit").click(function() {
+    $("edit-program").removeAttr("hidden");
+  });
 
   function gotoView() {
     window.location = "/view/song/view/" + songId

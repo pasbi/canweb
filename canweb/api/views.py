@@ -13,11 +13,12 @@ from django.http import HttpResponseServerError
 from django.http import JsonResponse
 from external.pattern import Pattern
 from external import service_interface
-from external.midicontroller import MidiController
+from external.midicontroller import selectProgram
 import json
 import base64
 import json
 import traceback
+import binascii
 
 class SongList(generics.ListCreateAPIView):
     queryset = Song.objects.all()
@@ -66,29 +67,25 @@ def sendMidiProgram(request, pk):
       return None
     try:
       program = json.loads(program)
-      if program['isValid'] == False:
-        print("invalid program")
-        return None
+      return program
     except Exception:
       print("error decoding program")
       traceback.print_exc();
       print(request.POST)
       return None
-    return program
 
   program = getProgram(pk)
   if program == None:
+    print("No program set. Please set an invalid program.")
     return HttpResponseBadRequest()
+  else:
+    try:
+      channel = 0
+      selectProgram(program, "/dev/midi1", channel)
+      return HttpResponse({"status": "success"})
+    except Exception as e:
+      raise e
+      return HttpResponseBadRequest()
 
-  mc = MidiController(1, '/dev/null')
-  try:
-    mc.applyProgram(program)
-  except Exception:
-    print("Failed to send midi program")
-    traceback.print_exc();
-    print(request.POST)
-    return HttpResponseBadRequest()
-
-  return HttpResponse({"status": "success"})
 
 
