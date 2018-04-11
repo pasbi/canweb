@@ -10,9 +10,22 @@ $('document').ready(function() {
   });
   $('#mi-updatemidi').click(function() {
     $.ajax({
-      url: '/api/program/' + songId,
+      url: '/api/song/' + songId + '/transmitMidiProgram',
       crossDomain: true,
-      method: "GET"
+      method: "GET",
+      success: function() {
+        showSnackbar("Sent midi command.")
+      },
+      error: function(error) {
+        if (error.status == 500) {
+          showSnackbar("Could not send midi command. Is the device connected properly?");
+        } else if (error.status == 400) {
+          showSnackbar("Could not send midi command. Does this song have a midi command?");
+        } else {
+          showSnackbar("Cannot send midi command, something went wrong.");
+        }
+        theError = error
+      }
     });
   });
 });

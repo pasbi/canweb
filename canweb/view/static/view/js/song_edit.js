@@ -11,14 +11,12 @@ $('document').ready(function() {
   $('#navbar-ul').html(items.join(''))
   // $('#mi-updatemidi').addClass('dropdown-menu');
 
-
   $("#mi-toggle-program-edit").click(function() {
     var ep = $("#edit-program")
     if (ep.is(":visible")) {
       ep.hide()
     } else {
       ep.show()
-
       try {
         $('#isValidCheckbox').prop('checked', songProgram['isValid'])
         $('#select-bank option').removeAttr("selected");
@@ -28,6 +26,7 @@ $('document').ready(function() {
         $('#select-program option').removeAttr("selected");
         $('#select-program option:eq(' + songProgram['program'] + ')').attr('selected', 'selected');
       } catch (error) {
+        alert("X")
         console.log(error);
       }
     }
@@ -51,6 +50,15 @@ $('document').ready(function() {
   }
 
   function submitFromEdit() {
+
+    program = {
+      "bank": $('#select-bank option:selected').index(),
+      "program": $('#select-program option:selected').index(),
+      "page": $('#select-page option:selected').index(),
+      "type": "NS2",
+      "isValid": $('#isValidCheckbox').prop('checked')
+    };
+
     $.ajax({
       method: 'PUT',
       url: '/api/song/' + songId + '.json',
@@ -58,7 +66,8 @@ $('document').ready(function() {
       dataType: "json",
       data: { 
         label: songLabel(), 
-        pattern: patternContent()
+        pattern: patternContent(),
+        midiCommand: program,
       },
       success: function(data) {
         gotoView();

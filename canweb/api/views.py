@@ -19,6 +19,7 @@ import base64
 import json
 import traceback
 import binascii
+import code
 
 class SongList(generics.ListCreateAPIView):
     queryset = Song.objects.all()
@@ -58,7 +59,7 @@ def transpose(request, d):
   print(pattern)
   return JsonResponse({"pattern": pattern})
 
-def sendMidiProgram(request, pk):
+def transmitMidiProgram(request, pk):
   def getProgram(pk):
     program = Song.objects.get(pk=pk).midiCommand
     assert(type(program) == str)
@@ -75,17 +76,21 @@ def sendMidiProgram(request, pk):
       return None
 
   program = getProgram(pk)
+  device = "/dev/midi1"
   if program == None:
     print("No program set. Please set an invalid program.")
     return HttpResponseBadRequest()
   else:
     try:
       channel = 0
-      selectProgram(program, "/dev/midi1", channel)
-      return HttpResponse({"status": "success"})
+      error = selectProgram(program, device, channel)
+      if error == None:
+        return HttpResponse({"status": "success"})
+      else:
+        print("Sending program failed.")
+        return HttpResponseServerError();
     except Exception as e:
       raise e
       return HttpResponseBadRequest()
-
 
 

@@ -8,12 +8,14 @@
     {% load static %}
     <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "view/css/view.css" %}">
+    <link rel="stylesheet" type="text/css" href="{% static "view/css/snackbar.css" %}">
     <link rel="stylesheet" type="text/css" href="{% static "view/css/contenteditable_placeholder.css" %}">
     <script>
         songId = {{ pk }};
     </script>
     <script type="text/javascript" src="{% static "js/jquery-3.3.1.js" %}"></script>
     <script type="text/javascript" src="{% static "js/bootstrap.js" %}"></script>
+    <script type="text/javascript" src="{% static "view/js/snackbar.js" %}"></script>
     <script type="text/javascript" src="{% static "view/js/song_view.js" %}"></script>
 
 </head>
@@ -27,4 +29,5 @@
             <div>Empty Pattern</div>
         {% endif %}
     </div>
+    <div id='snackbar'></div>
 </body>

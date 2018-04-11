@@ -21,7 +21,7 @@ function loadSongList(ajaxResult) {
 function viewSong(songId) {
   var viewurl = '/view/song/view/' + songId + "/";
   $.ajax({
-    url: '/api/program/' + songId,
+    url: '/api/song/' + songId + '/transmitMidiProgram',
     crossDomain: true,
     method: "GET",
     success: function(result) {

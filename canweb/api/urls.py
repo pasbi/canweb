@@ -9,7 +9,7 @@ urlpatterns = [
     path(r'search/<str:service>/<str:query>/', views.searchPattern),
     path(r'pattern/<str:service>/<str:query>/', views.getPattern),
     path(r'transpose/<int:d>', views.transpose),
-    path(r'program/<int:pk>', views.sendMidiProgram)
+    path(r'song/<int:pk>/transmitMidiProgram', views.transmitMidiProgram),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
