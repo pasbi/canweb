@@ -67,7 +67,7 @@ $('document').ready(function() {
       data: { 
         label: songLabel(), 
         pattern: patternContent(),
-        midiCommand: program,
+        midiCommand: JSON.stringify(program),
       },
       success: function(data) {
         gotoView();

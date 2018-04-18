@@ -27,7 +27,6 @@ class SongList(generics.ListCreateAPIView):
 
 class SongDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Song.objects.all()
-    renderer_classes = (TemplateHTMLRenderer, JSONRenderer)
     serializer_class = SongDetailSerializer
 
 def searchPattern(request, service, query):
